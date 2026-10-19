@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#981B30">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Un restaurante al mes para cenar el viernes: Madrid, Alcalá, Torrejón, Cobeña y Daganzo, cubierto medio ≤ 45 €.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-512.png">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+<title>Cena del Viernes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="apple-mobile-web-app-title" content="Cena Viernes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: una sola columna tipo app de bolsillo; tarjeta-comanda de la semana arriba, pestañas fijas abajo */
+:root{
+  --bg:#ECEFEA; --surface:#FFFFFF; --ink:#18201C; --muted:#5B6862; --line:#D3D9D3;
+  --wine:#981B30; --wine-soft:#F5E3E6; --mustard:#C98F1E; --ok:#2F7A4E;
+  --f-display:"Bricolage Grotesque",ui-rounded,system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111613; --surface:#1A201D; --ink:#E8EEEA; --muted:#97A39D; --line:#2A332F;
+  --wine:#E8687C; --wine-soft:#3A1F25; --mustard:#E3B657; --ok:#6CC08E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111613; --surface:#1A201D; --ink:#E8EEEA; --muted:#97A39D; --line:#2A332F;
+  --wine:#E8687C; --wine-soft:#3A1F25; --mustard:#E3B657; --ok:#6CC08E; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 calc(84px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-top:18px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+header.top h1{font-size:28px;font-weight:800;line-height:1.05}
+header.top h1 span{color:var(--wine)}
+.countdown{text-align:right;font-size:13px;color:var(--muted)}
+.countdown b{display:block;font-family:var(--f-display);font-size:22px;color:var(--ink)}
+
+/* Tarjeta de la semana: comanda con borde perforado */
+.ticket{background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 10px 30px -18px rgba(0,0,0,.35)}
+.ticket-head{background:var(--wine);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ticket-head .eyebrow{color:rgba(255,255,255,.8)}
+.ticket-head .date{font-family:var(--f-display);font-weight:700;font-size:17px}
+.perf{height:14px;background:radial-gradient(circle at 7px 0,var(--bg) 6px,transparent 6.5px) 0 0/14px 14px repeat-x}
+.ticket-body{padding:6px 18px 18px;display:flex;flex-direction:column;gap:14px}
+.ticket-body h2{font-size:30px;font-weight:800;line-height:1.05}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--bg);color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+.chip.zone{background:var(--wine-soft);border-color:transparent;color:var(--wine)}
+.chip.warn{color:var(--mustard)}
+.figures{display:grid;grid-template-columns:1fr 1fr;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}
+.figures>div{padding:10px 0;display:flex;flex-direction:column;gap:2px}
+.figures>div+div{border-left:1px dashed var(--line);padding-left:14px}
+.big{font-family:var(--f-display);font-size:26px;font-weight:700;line-height:1}
+.big small{font-size:13px;font-weight:500;color:var(--muted);font-family:var(--f-body)}
+.stars{color:var(--mustard)}
+.why{margin:0;font-size:15.5px}
+.addr{font-size:13.5px;color:var(--muted);margin:0}
+.notes{font-size:12.5px;color:var(--muted);margin:0}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:14px;text-decoration:none;color:var(--ink);cursor:pointer;min-height:44px;text-align:center}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.ghost{background:transparent}
+.btn:active{transform:translateY(1px)}
+.phone{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;background:var(--bg);border-radius:12px;padding:8px 8px 8px 12px}
+.phone .mono{user-select:all}
+.phone button{border:0;background:var(--surface);border-radius:8px;padding:6px 10px;font-weight:600;font-size:13px;cursor:pointer}
+.secondary-actions{display:flex;flex-wrap:wrap;gap:8px}
+.secondary-actions .btn{flex:1 1 30%;font-size:13px;padding:9px 8px}
+.toast{font-size:13px;color:var(--ok);min-height:1em;margin:0}
+
+.section{display:flex;flex-direction:column;gap:10px}
+.section h3{font-size:18px}
+.next{display:flex;flex-direction:column;background:var(--surface);border-radius:14px;overflow:hidden}
+.next-row{display:grid;grid-template-columns:76px 1fr auto;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid var(--line)}
+.next-row:first-child{border-top:0}
+.next-row .d{font-size:12.5px;color:var(--muted)}
+.next-row .n{font-weight:600;min-width:0}
+.next-row .n small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.next-row .p{font-size:13px}
+
+/* Listado */
+.filters{display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr auto;gap:8px}
+input[type=search],select{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;min-height:44px;width:100%;box-sizing:border-box}
+.count{font-size:13px;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:8px}
+details.r{background:var(--surface);border-radius:14px;border:1px solid transparent}
+details.r[open]{border-color:var(--line)}
+details.r summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 14px}
+details.r summary::-webkit-details-marker{display:none}
+.r-name{font-weight:700;font-family:var(--f-display);font-size:16.5px;min-width:0}
+.r-sub{font-size:12.5px;color:var(--muted);grid-column:1}
+.r-right{grid-row:1/3;grid-column:2;text-align:right;display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:13px}
+.r-body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:6px;background:var(--ok);color:var(--surface);margin-left:6px;vertical-align:2px}
+.badge.no{background:var(--muted)}
+
+/* Ajustes */
+.card{background:var(--surface);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.card p{margin:0}
+.card ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.method{font-size:13.5px;color:var(--muted)}
+
+/* Pestañas fijas */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);
+  padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;justify-content:center}
+nav.tabs .in{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;max-width:560px}
+nav.tabs button{border:0;background:transparent;border-radius:10px;padding:8px 4px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-selected="true"]{color:var(--wine);background:var(--wine-soft)}
+@media (prefers-reduced-motion:no-preference){.ticket{animation:in .35s ease-out both}@keyframes in{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Henares · Madrid</div>
+      <h1>Cena del <span>viernes</span></h1>
+    </div>
+    <div class="countdown" id="countdown"></div>
+  </header>
+
+  <main id="view-semana" class="section" style="gap:22px">
+    <article class="ticket" id="ticket"></article>
+    <section class="section">
+      <h3>Próximos meses</h3>
+      <div class="next" id="upcoming"></div>
+    </section>
+    <section class="section" id="historySec">
+      <h3>Meses anteriores</h3>
+      <div class="next" id="history"></div>
+    </section>
+  </main>
+
+  <main id="view-todos" class="section" hidden>
+    <div class="filters">
+      <div class="chips" id="zoneChips" role="group" aria-label="Zona"></div>
+      <div class="row2">
+        <input type="search" id="q" placeholder="Buscar nombre o cocina…" aria-label="Buscar">
+        <select id="sort" aria-label="Ordenar">
+          <option value="nota">Mejor nota</option>
+          <option value="precio">Más barato</option>
+          <option value="resenas">Más reseñas</option>
+          <option value="nombre">A–Z</option>
+        </select>
+      </div>
+      <div class="count" id="count"></div>
+    </div>
+    <div class="list" id="list"></div>
+  </main>
+
+  <main id="view-ajustes" class="section" hidden>
+    <div class="card">
+      <h3>¿Qué viernes del mes?</h3>
+      <p class="method">La cena es un viernes al mes. Elige cuál.</p>
+      <div class="chips" id="prefViernes" role="group" aria-label="Viernes del mes" style="flex-wrap:wrap"></div>
+    </div>
+    <div class="card">
+      <h3>Zonas para la propuesta</h3>
+      <p class="method">La propuesta de cada mes solo saldrá de las zonas marcadas.</p>
+      <div class="chips" id="prefZones" role="group" aria-label="Zonas de la propuesta" style="flex-wrap:wrap"></div>
+    </div>
+    <div class="card">
+      <h3>Ponerla en el iPhone</h3>
+      <ol>
+        <li>Abre este enlace en <b>Safari</b>.</li>
+        <li>Toca el botón <b>Compartir</b> (cuadrado con flecha hacia arriba).</li>
+        <li>Elige <b>Añadir a pantalla de inicio</b> y ponle de nombre «Cena Viernes».</li>
+      </ol>
+      <p class="method">Tendrás un icono como cualquier app. Al abrirla verás la propuesta del mes; cuando pase la cena, saldrá la del mes siguiente.</p>
+    </div>
+    <div class="card">
+      <h3>Cómo se elige</h3>
+      <p class="method">Solo entran restaurantes con cubierto medio de 45 € o menos y buenas críticas (Google ≥ 4,2 con cientos de reseñas, o TheFork ≥ 9, Solete Repsol o Bib Gourmand). Cada mes la app propone uno distinto, alternando zonas y tipos de cocina. Lo que marques como «Ya fuimos» o «No me apetece» deja de salir. Cada lunes se buscan restaurantes nuevos: llevan la etiqueta «Nuevo» y entran en las propuestas de los meses siguientes.</p>
+      <p class="method" id="dataInfo"></p>
+    </div>
+    <div class="card">
+      <h3>Restaurantes marcados</h3>
+      <p class="method" id="markedInfo"></p>
+      <button class="btn" id="resetBtn" type="button">Volver a incluir todos</button>
+      <p class="toast" id="resetToast"></p>
+    </div>
+  </main>
+</div>
+
+<nav class="tabs" role="tablist" aria-label="Secciones">
+  <div class="in">
+    <button role="tab" id="tab-semana" aria-selected="true" data-view="semana" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 3v8a3 3 0 0 0 3 3v7M10 3v6M13 3v8a3 3 0 0 1-3 3"/><path d="M18 21V3c-2 1-3 4-3 8h3"/></svg>Este mes</button>
+    <button role="tab" id="tab-todos" aria-selected="false" data-view="todos" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Todos</button>
+    <button role="tab" id="tab-ajustes" aria-selected="false" data-view="ajustes" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M4 7h4M16 7h4M4 17h10M18 17h2"/><circle cx="12" cy="7" r="0"/></svg>Ajustes</button>
+  </div>
+</nav>
+
+<script>
+let DATA = [{"nombre":"Bacira","zona":"Madrid","barrio":"Chamberí (Trafalgar)","direccion":"Calle del Castillo 16, 28010 Madrid","cocina":"Fusión mediterránea-japonesa-nikkei","precio_medio":30,"nota_google":4.5,"resenas_aprox":2280,"otras_notas":"Bib Gourmand Michelin 2026 / TheFork 9.1 (1.233) / Tripadvisor 4.5 (1.161)","por_que":"Platos para compartir de fusión mediterránea y nikkei a muy buen precio; uno de los Bib Gourmand más populares de Madrid.","reserva":"imprescindible","web":"http://www.bacira.es/","telefono":"918 66 40 30","fuente":"https://guide.michelin.com/es/es/best-of/las-mejores-mesas-a-menos-de-40-eu-en-madrid"},{"nombre":"La Montería","zona":"Madrid","barrio":"Retiro (Ibiza)","direccion":"Calle Lope de Rueda 35, 28009 Madrid","cocina":"Española tradicional / caza","precio_medio":38,"nota_google":4.5,"resenas_aprox":3447,"otras_notas":"Bib Gourmand Michelin 2026 / TheFork 9.6 / Tripadvisor 4.3 / Time Out 5/5","por_que":"Casa de 1963 junto al Retiro; pide la gamba rebozada, el rabo o el plato de caza de temporada.","reserva":"recomendada","web":"http://www.lamonteria.es/","telefono":"915 74 18 12","fuente":"https://gastroranking.es/r/la-monteria-3_51585/"},{"nombre":"Tres por Cuatro","zona":"Madrid","barrio":"Salamanca (Goya)","direccion":"Calle Montesa 9 (esquina Hermosilla), 28006 Madrid","cocina":"Española actual con toques mexicanos y peruanos","precio_medio":38,"nota_google":4.5,"resenas_aprox":1232,"otras_notas":"Bib Gourmand Michelin 2026 / Tripadvisor 4.4. Abre de lunes a viernes (cierra fines de semana)","por_que":"Álex Marugán mezcla lo castizo con lo latino; destacan el torrezno y el taco de ossobuco pibil.","reserva":"imprescindible","web":"https://tresporcuatromadrid.com","telefono":"915 65 45 57","fuente":"https://www.esmadrid.com/restaurantes/tres-cuatro"},{"nombre":"Las Tortillas de Gabino","zona":"Madrid","barrio":"Chamberí (Almagro)","direccion":"Calle de Rafael Calvo 20, 28010 Madrid","cocina":"Española tradicional / tortillas","precio_medio":38,"nota_google":4.5,"resenas_aprox":2587,"otras_notas":"Bib Gourmand Michelin 2026 / Time Out 5/5 / esMadrid: 31-45 €","por_que":"Tortillas de autor, como la Velazqueña o la trufada, en un clásico del grupo La Ancha.","reserva":"imprescindible","web":"https://lastortillasdegabino.com","telefono":"913 19 75 05","fuente":"https://www.esmadrid.com/restaurantes/las-tortillas-de-gabino"},{"nombre":"Chuka Ramen Bar","zona":"Madrid","barrio":"Centro (Barrio de las Letras)","direccion":"Calle Echegaray 9, 28014 Madrid","cocina":"Japonesa-china (ramen, izakaya)","precio_medio":35,"nota_google":4.6,"resenas_aprox":2633,"otras_notas":"Tripadvisor 4.3 (585) / recomendado por Time Out","por_que":"Uno de los mejores ramen de Madrid desde 2014; pide también los baos y las gyozas.","reserva":"recomendada","web":"","telefono":"640 651 346","fuente":"https://gastroranking.es/r/chuka_57621/"},{"nombre":"Mikuna","zona":"Madrid","barrio":"Chamberí (Arapiles)","direccion":"Calle de Galileo 56, 28015 Madrid","cocina":"Peruana","precio_medio":25,"nota_google":4.7,"resenas_aprox":2879,"otras_notas":"Solete Guía Repsol 2026 / TheFork 9.4 / Tripadvisor 4.4","por_que":"Cocina peruana auténtica a precio de barrio: ceviches, causas y lomo saltado.","reserva":"recomendada","web":"https://www.restaurantemikuna.com/","telefono":"916 05 90 31","fuente":"https://gastroranking.es/r/mikuna_166374/"},{"nombre":"Tatemado","zona":"Madrid","barrio":"La Latina","direccion":"Plaza de la Cebada 9, 28005 Madrid","cocina":"Mexicana","precio_medio":30,"nota_google":4.7,"resenas_aprox":861,"otras_notas":"OpenTable: 30 € o menos / Tripadvisor 4.1","por_que":"Taquería con ambiente de rincón mexicano: tacos al pastor, enchiladas verdes y mole.","reserva":"recomendada","web":"http://www.tatemado.es/","telefono":"672 53 06 11","fuente":"https://gastroranking.es/r/tatemado_293485/"},{"nombre":"Hanakura","zona":"Madrid","barrio":"Chamberí (Trafalgar, junto a Olavide)","direccion":"Calle Murillo 4, Madrid","cocina":"Japonesa (izakaya)","precio_medio":35,"nota_google":4.4,"resenas_aprox":1711,"otras_notas":"TheFork 9.2 (757) / Tripadvisor 4.1","por_que":"Tapas japonesas caseras estilo izakaya; ramen y okonomiyaki, pioneros en Madrid.","reserva":"recomendada","web":"http://www.hanakura.es/","telefono":"914 45 46 91","fuente":"https://gastroranking.es/r/hanakura_506"},{"nombre":"Pizzeria Fratelli Figurato","zona":"Madrid","barrio":"Chamberí (Ríos Rosas)","direccion":"Calle de Alonso Cano 37, 28003 Madrid","cocina":"Italiana (pizza napolitana)","precio_medio":20,"nota_google":4.6,"resenas_aprox":5146,"otras_notas":"50 Top Pizza (entre las mejores de Europa) / Tripadvisor 3.9","por_que":"Pizza napolitana de referencia de dos hermanos de Nápoles, a precio muy contenido.","reserva":"recomendada","web":"https://www.fratellifigurato.es/pizzeria-madrid","telefono":"914 85 79 93","fuente":"https://gastroranking.es/r/pizzeria-fratelli-figurato_190545/"},{"nombre":"Baldoria","zona":"Madrid","barrio":"Salamanca (Lista)","direccion":"Calle Ortega y Gasset 100, 28006 Madrid","cocina":"Italiana (pizza)","precio_medio":35,"nota_google":null,"resenas_aprox":null,"otras_notas":"2ª mejor pizzería de Europa en 50 Top Pizza 2026 / Búfala Fest, Mejor Pizza de España 2024. Precio 26-40 €","por_que":"Pide la Búfala Fest en una de las mejores pizzerías de Europa; cuesta conseguir mesa.","reserva":"imprescindible","web":"","telefono":"910 94 49 41","fuente":"https://www.timeout.es/madrid/es/noticias/madrid-tiene-la-segunda-mejor-pizzeria-de-europa-este-2026-un-nuevo-triunfo-del-creador-de-beata-pasta-062926"},{"nombre":"Izakaya Han","zona":"Madrid","barrio":"Centro (Justicia / Chueca)","direccion":"Calle San Bartolomé 10, 28004 Madrid","cocina":"Coreana (con platos japoneses)","precio_medio":25,"nota_google":4.7,"resenas_aprox":1524,"otras_notas":"TheFork 9.5 (2.726) / Tripadvisor 4.4","por_que":"Cocina coreana casera de dueños coreanos: bulgogi, kimchi y calamar salteado. Solo unas 7 mesas.","reserva":"imprescindible","web":"https://izakayahan.com","telefono":"912 98 77 11","fuente":"https://gastroranking.es/r/izakaya-han_52025"},{"nombre":"Indian Aroma","zona":"Madrid","barrio":"Centro (Huertas / Cortes)","direccion":"Calle Ventura de la Vega 6, 28014 Madrid","cocina":"India","precio_medio":30,"nota_google":4.6,"resenas_aprox":2653,"otras_notas":"TheFork 9.5 (2.564) / Tripadvisor 4.4","por_que":"El indio mejor valorado de Madrid: curris, cordero y tandoori con servicio rápido y amable.","reserva":"recomendada","web":"https://restauranteindianaroma.com","telefono":"913 69 23 33","fuente":"https://gastroranking.es/r/indian-aroma_70/"},{"nombre":"K.A Restaurante","zona":"Madrid","barrio":"La Latina (Palacio)","direccion":"Calle de Grafal 4, bajo, 28005 Madrid","cocina":"Tailandesa","precio_medio":25,"nota_google":4.7,"resenas_aprox":557,"otras_notas":"TheFork 9.4 (2.694) / el tailandés mejor valorado de Madrid en GastroRanking","por_que":"Tailandés auténtico; pide el pad kra pao con albahaca sagrada y el pad thai.","reserva":"recomendada","web":"https://www.ka-restaurante.com/","telefono":"912 30 97 35","fuente":"https://gastroranking.es/r/ka-restaurante_211524/"},{"nombre":"Milos","zona":"Madrid","barrio":"Salamanca (Guindalera)","direccion":"Calle Francisco Silvela 30, 28028 Madrid","cocina":"Griega","precio_medio":null,"nota_google":4.4,"resenas_aprox":2636,"otras_notas":"TheFork 9.0 (1.583) / Tripadvisor 4.6","por_que":"Taberna griega: brochetas de cordero y ternera, pulpo y pita, con buen ambiente.","reserva":"recomendada","web":"https://losmejoresgriegos.com/milos","telefono":"914 17 57 05","fuente":"https://gastroranking.es/r/milos_54272/"},{"nombre":"Lamian by Soy Kitchen","zona":"Madrid","barrio":"Centro (Plaza de los Mostenses)","direccion":"Plaza de los Mostenses 4, 28015 Madrid","cocina":"Asiática fusión (noodles)","precio_medio":38,"nota_google":4.4,"resenas_aprox":1242,"otras_notas":"Recomendado Michelin / Tripadvisor 4.0. Abre de martes a sábado","por_que":"Noodles estirados a mano; pide el lamian de rabo «Jackie Chan is not Bruce Lee» y los dim sum.","reserva":"recomendada","web":"https://soykitchen.es","telefono":"915 48 88 79","fuente":"https://gastroranking.es/r/soy-kitchen_120033/"},{"nombre":"La Barra de la Tasquería","zona":"Madrid","barrio":"Retiro (Niño Jesús)","direccion":"Calle Duque de Sesto 48, 28009 Madrid","cocina":"Española tradicional / casquería","precio_medio":null,"nota_google":null,"resenas_aprox":null,"otras_notas":"Bib Gourmand Michelin 2026 (lista Michelin de mesas a menos de 40 €)","por_que":"La versión informal de La Tasquería de Javi Estévez: callos, croquetas, canelón de carne y gildas.","reserva":"recomendada","web":"","telefono":"","fuente":"https://guide.michelin.com/es/es/best-of/las-mejores-mesas-a-menos-de-40-eu-en-madrid"},{"nombre":"La MaMá","zona":"Madrid","barrio":"Tetuán (Castillejos)","direccion":"Avenida del Brasil 6, 28020 Madrid","cocina":"Española tradicional renovada","precio_medio":null,"nota_google":4.6,"resenas_aprox":1100,"otras_notas":"Bib Gourmand Michelin 2026. Cierra fines de semana; confirma que abre el viernes por la noche","por_que":"Cocina «maternal evolucionada», con carta tradicional y dos menús degustación, junto a Azca.","reserva":"recomendada","web":"","telefono":"910 61 97 64","fuente":"https://guide.michelin.com/es/es/comunidad-de-madrid/madrid/restaurante/la-mama"},{"nombre":"Pacto Raíz","zona":"Madrid","barrio":"Salamanca (Recoletos)","direccion":"Calle de Espartinas 5, 28001 Madrid","cocina":"Española, mexicana y peruana","precio_medio":35,"nota_google":null,"resenas_aprox":null,"otras_notas":"Solete Guía Repsol 2026 / Recomendado Michelin","por_que":"Segundo local de Álex Marugán (Tres por Cuatro), con carta corta y colorida; la casa recomienda el ceviche.","reserva":"recomendada","web":"https://pactoraiz.com/","telefono":"914 88 20 21","fuente":"https://www.guiarepsol.com/es/fichas/solete/pacto-raiz-335331/"},{"nombre":"Pasta Mito","zona":"Madrid","barrio":"Chamartín (Hispanoamérica)","direccion":"Calle Bolivia 9, 28016 Madrid","cocina":"Italiana (pasta fresca)","precio_medio":null,"nota_google":4.6,"resenas_aprox":248,"otras_notas":"Solete Guía Repsol 2026 / Tripadvisor 4.6","por_que":"Pasta fresca de mucho nivel: carbonara, platos con trufa y tiramisú.","reserva":"recomendada","web":"https://pastamito.com","telefono":"911 64 97 24","fuente":"https://gastroranking.es/r/pasta-mito_79271/"},{"nombre":"Casa Toni","zona":"Madrid","barrio":"Centro (Sol)","direccion":"Calle de la Cruz 14, 28012 Madrid","cocina":"Taberna castiza / casquería","precio_medio":null,"nota_google":4.5,"resenas_aprox":4951,"otras_notas":"Tripadvisor 4.4 (859)","por_que":"Taberna de toda la vida y barata: oreja a la plancha, champiñones, zarajos y callos.","reserva":"no necesaria","web":"","telefono":"915 32 25 80","fuente":"https://gastroranking.es/r/casa-toni_55114/"},{"nombre":"Gandarío","zona":"Madrid","barrio":"Chamberí (Gaztambide)","direccion":"Calle Gaztambide 28, 28015 Madrid","cocina":"Tapas / bar de barrio","precio_medio":20,"nota_google":4.7,"resenas_aprox":2306,"otras_notas":"Tripadvisor 4.7 (578)","por_que":"Bar de tapas de barrio muy barato: tablas de patatas con carnes y salsas para compartir, y croquetas.","reserva":"recomendada","web":"","telefono":"915 43 50 81","fuente":"https://gastroranking.es/r/gandario_58914/"},{"nombre":"El Buda Feliz","zona":"Madrid","barrio":"Centro (Callao)","direccion":"Calle Tudescos 5, 28004 Madrid","cocina":"China","precio_medio":25,"nota_google":4.7,"resenas_aprox":11285,"otras_notas":"Primer restaurante chino de España (1974) / Tripadvisor 3.8","por_que":"El primer chino de España: pato laqueado, gambas con melón y pollo con cacahuetes.","reserva":"recomendada","web":"https://elbudafeliz1974.es","telefono":"915 31 95 24","fuente":"https://gastroranking.es/r/el-buda-feliz_52027/"},{"nombre":"Aredna","zona":"Madrid","barrio":"Centro (Barceló)","direccion":"Calle de Barceló 5, 28004 Madrid","cocina":"Libanesa","precio_medio":38,"nota_google":4.6,"resenas_aprox":1288,"otras_notas":"De los libaneses mejor valorados de Madrid en GastroRanking (30-45 €)","por_que":"Libanés con buena relación calidad-precio: cordero, berenjena y carnes a la brasa.","reserva":"recomendada","web":"https://arednarestaurante.com","telefono":"682 05 03 04","fuente":"https://gastroranking.es/r/aredna_308883/"},{"nombre":"Vega","zona":"Madrid","barrio":"Malasaña","direccion":"Calle de la Luna 9, 28004 Madrid","cocina":"Vegetariana / vegana","precio_medio":null,"nota_google":4.4,"resenas_aprox":3400,"otras_notas":"Tripadvisor 4.4 (930)","por_que":"Vegetariano acogedor con opciones veganas; sus croquetas son el plato estrella.","reserva":"recomendada","web":"","telefono":"910 70 49 69","fuente":"https://gastroranking.es/r/vega_90668/"},{"nombre":"La Zarza","zona":"Alcalá de Henares","barrio":"Centro histórico (junto a Plaza de Cervantes)","direccion":"Plaza Rodríguez Marín, 3","cocina":"Gastrobar / tapas creativas españolas","precio_medio":40,"nota_google":4.8,"resenas_aprox":2630,"otras_notas":"Solete Guía Repsol (verano 2025); Tripadvisor 4.6 (264 opiniones); reseñas de octubre de 2026, así que sigue abierto","por_que":"Pide la croqueta de callos, el taco de carrillera y el huevo de Viridiana con hongos y trufa; hay menú degustación de 50 €.","reserva":"imprescindible","web":"https://gastrobarlazarza.com","telefono":"658 90 29 04","fuente":"https://gastroranking.es/r/restaurante-la-zarza_210653/"},{"nombre":"Abrasador Casa Benito","zona":"Alcalá de Henares","barrio":"Centro","direccion":"Avenida de Madrid, 14-16","cocina":"Asador / carnes a la brasa","precio_medio":30,"nota_google":4.6,"resenas_aprox":2240,"otras_notas":"Tripadvisor 4.8 (733 opiniones), nº1 de Tripadvisor en Alcalá; cierra los domingos (según guía de 2017)","por_que":"Buena brasa a buen precio: chuletón, churrasco y parrillada de ibérico.","reserva":"recomendada","web":null,"telefono":"91 878 73 50","fuente":"https://gastroranking.es/r/abrasador-casa-benito_35243/"},{"nombre":"Eximio by Fernando Martín","zona":"Alcalá de Henares","barrio":"Centro histórico","direccion":"Calle Victoria, 2 (local bajo)","cocina":"Española contemporánea","precio_medio":35,"nota_google":4.7,"resenas_aprox":1290,"otras_notas":"Bib Gourmand Michelin 2024 y 2025 (según EnPrimeur); TheFork 9.4 (1.388 opiniones); Tripadvisor 4.5","por_que":"Su menú degustación es de nivel Michelin a precio contenido, con buen pescado (corvina, merluza, bonito) y vinos a precio razonable.","reserva":"imprescindible","web":"https://restauranteeximio.com","telefono":"915 13 89 80","fuente":"https://gastroranking.es/r/restaurante-eximio_209874/"},{"nombre":"Ébano Gastro Experience","zona":"Alcalá de Henares","barrio":"Centro histórico","direccion":"Calle San Diego, 5","cocina":"Mediterránea con toques asiáticos / brasa","precio_medio":30,"nota_google":4.7,"resenas_aprox":3290,"otras_notas":"Tripadvisor 4.5 (408 opiniones)","por_que":"Pide las gyozas, los dumplings, el pulpo y la carne del horno de carbón; muy buena relación calidad-precio.","reserva":"imprescindible","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/ebano-gastro-experience_136086/"},{"nombre":"Vaoke Gastro Bar","zona":"Alcalá de Henares","barrio":null,"direccion":"Calle Manuel Merino, 20","cocina":"Fusión peruano-española / creativa","precio_medio":38,"nota_google":4.6,"resenas_aprox":1230,"otras_notas":"Tripadvisor 4.6 (137 opiniones); reseñas de marzo de 2026","por_que":"Su ceviche es lo más elogiado; prueba también los dim sum de pollo ahumado en pepitoria y el sándwich de rabo.","reserva":"recomendada","web":"https://vaokegastro.com","telefono":"622 90 84 40","fuente":"https://gastroranking.es/r/vaoke-gastro-bar_177303/"},{"nombre":"Ki-Jote","zona":"Alcalá de Henares","barrio":"Centro histórico","direccion":"C/ San Diego, 3, interior (algún directorio da Vía Complutense 42; conviene confirmarlo)","cocina":"Japonesa con toque mediterráneo","precio_medio":40,"nota_google":4.4,"resenas_aprox":1385,"otras_notas":"Recomendado por la Guía Michelin; TheFork 9.2; Tripadvisor 4.3; reseñas de abril de 2026","por_que":"Prueba las Japobravas, los nigiris y los rolls, o el menú degustación (unos 35 € sin bebida).","reserva":"imprescindible","web":"http://ki-jote.com","telefono":"652 831 015","fuente":"https://gastroranking.es/r/ki-jote_99364/"},{"nombre":"Fino Bar","zona":"Alcalá de Henares","barrio":"Centro","direccion":"Calle Carmen Calzado, 15","cocina":"Taberna moderna / tapas y raciones","precio_medio":25,"nota_google":4.8,"resenas_aprox":3730,"otras_notas":"Tripadvisor 4.2; nº1 en Restaurant Guru Alcalá; lo fundó el sumiller Alberto Sánchez","por_que":"Ve a por los torreznos, las croquetas, el pulpo y la tarta casera, con buena selección de vinos.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/fino-bar_310344/"},{"nombre":"Caiko Smokehouse","zona":"Alcalá de Henares","barrio":"Centro","direccion":"Paseo de los Curas, 3","cocina":"Ahumados y brasa / española","precio_medio":null,"nota_google":4.7,"resenas_aprox":1900,"otras_notas":"Tripadvisor 4.5 (25 opiniones); nº1 en GastroRanking Alcalá","por_que":"Pide el costillar ahumado, el entrecot o el chuletón, y deja sitio para su tarta de queso, la más elogiada.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/caiko-smokehouse_213399/"},{"nombre":"Nubium","zona":"Alcalá de Henares","barrio":"Centro histórico (Calle Mayor)","direccion":"Calle Mayor, 40","cocina":"Española","precio_medio":null,"nota_google":4.5,"resenas_aprox":2140,"otras_notas":"Tripadvisor 4.0 (74 opiniones); reseñas de abril de 2026","por_que":"Cocina española bien valorada en plena Calle Mayor, buena para cenar después de pasear por el casco.","reserva":"recomendada","web":"https://nubiumrestaurante.es","telefono":"670 33 69 70","fuente":"https://gastroranking.es/r/restaurante-nubium_209210/"},{"nombre":"Palki","zona":"Alcalá de Henares","barrio":"Centro histórico (Calle Mayor)","direccion":"Calle Mayor, 16","cocina":"India","precio_medio":20,"nota_google":4.8,"resenas_aprox":640,"otras_notas":"TheFork 9.7 (236 opiniones)","por_que":"Pide el curry con crema de coco, el korma, el cordero y el naan caliente, y de postre el batido de mango.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/palki-restaurante_209980/"},{"nombre":"Restaurante Peruano Misky Hallpa","zona":"Alcalá de Henares","barrio":"Centro","direccion":"Calle Juan de Soto, 10","cocina":"Peruana","precio_medio":null,"nota_google":4.7,"resenas_aprox":2870,"otras_notas":"Tripadvisor 4.5; nº1 en cocina peruana de Alcalá según GastroRanking; reseñas de enero de 2026","por_que":"Ve a por el ceviche, el lomo saltado y el pollo; en horas punta el servicio puede ir lento.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/restaurante-peruano-misky-hallpa_209865/"},{"nombre":"Ramen San","zona":"Alcalá de Henares","barrio":"Centro histórico (Plaza de Cervantes)","direccion":"Plaza de Cervantes, 22","cocina":"Asiática / ramen","precio_medio":18,"nota_google":4.6,"resenas_aprox":1470,"otras_notas":"Tripadvisor 4.6 (unas 145 opiniones)","por_que":"Barato y sabroso: pide el ramen, las gyozas de cerdo y el karaage.","reserva":"no necesaria","web":null,"telefono":"918 89 89 52","fuente":"https://gastroranking.es/r/ramen-san_186949/"},{"nombre":"Shanghai Mama Alcalá de Henares","zona":"Alcalá de Henares","barrio":"La Garena","direccion":"Av. Juan Carlos I, 14, local 7-8","cocina":"China","precio_medio":30,"nota_google":4.3,"resenas_aprox":509,"otras_notas":"TheFork 9.6 (1.448 opiniones), nº1 de TheFork en Alcalá","por_que":"China de calidad, lejos del chino de barrio, con dim sum, pato y un menú degustación muy elogiado.","reserva":"recomendada","web":"https://www.shanghaimama.es/restaurantes/","telefono":"912 88 07 67","fuente":"https://www.thefork.es/restaurantes/alcala-de-henares-c12515"},{"nombre":"La Chelinda - Libreros","zona":"Alcalá de Henares","barrio":"Centro histórico","direccion":"Calle Libreros, 26","cocina":"Mexicana / taquería","precio_medio":18,"nota_google":4.2,"resenas_aprox":2440,"otras_notas":"TheFork 9.3 (más de 2.100 opiniones)","por_que":"Plan informal y económico: tacos, guacamole y pico de gallo, con un servicio muy simpático.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/la-chelinda-alcala-de-henares_150898/"},{"nombre":"La Pizzeria Casera","zona":"Alcalá de Henares","barrio":null,"direccion":null,"cocina":"Italiana / pizzería","precio_medio":20,"nota_google":4.3,"resenas_aprox":null,"otras_notas":"TheFork 9.5 (pocas opiniones); Tripadvisor 4.3 (1.841 opiniones); es el italiano mejor valorado de Alcalá, donde la oferta italiana es floja","por_que":"Lo mejor son la pizza, la pasta y el tiramisú casero; tiene terraza.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/la-pizzeria-casera_35354/"},{"nombre":"Hostería del Estudiante (Parador de Alcalá)","zona":"Alcalá de Henares","barrio":"Centro histórico","direccion":"Calle Colegios, 3","cocina":"Tradicional castellana","precio_medio":36,"nota_google":null,"resenas_aprox":null,"otras_notas":"TheFork 9.2 (1.044 opiniones); Tripadvisor 4.0","por_que":"Cocina castellana clásica (asados, sopa castellana) en un comedor histórico del siglo XVI junto a la Universidad.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://www.thefork.es/restaurantes/alcala-de-henares-c12515"},{"nombre":"El Zoquito","zona":"Torrejón de Ardoz","barrio":"Centro / zona Lisboa","direccion":"C. Lisboa, 2, 28850 Torrejón de Ardoz","cocina":"Mediterránea (carta 100 % sin gluten)","precio_medio":25,"nota_google":null,"resenas_aprox":521,"otras_notas":"TheFork 9,5/10 (521 opiniones). Local pequeño, puede ser ruidoso cuando está lleno","por_que":"Raciones para compartir muy bien valoradas (secreto ibérico, zamburiñas, chipirones, croquetas, tarta de queso); todo apto para celíacos.","reserva":"recomendada","web":"https://www.thefork.es/restaurante/el-zoquito-r836383","telefono":null,"fuente":"https://www.thefork.es/restaurante/el-zoquito-r836383"},{"nombre":"Marisquería Plaza","zona":"Torrejón de Ardoz","barrio":"Centro (Veredillas)","direccion":"C. Veredilla, s/n, 28850 Torrejón de Ardoz","cocina":"Marisquería / española","precio_medio":35,"nota_google":4.3,"resenas_aprox":962,"otras_notas":"TheFork 9,5/10 (114). Tripadvisor 4,3 (70). Tiene terraza","por_que":"Pescado y marisco de calidad (gambas, ventresca, calamares) y flan casero; tienen pan sin gluten.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://www.thefork.es/restaurante/marisqueria-plaza-r369381"},{"nombre":"Redondo","zona":"Torrejón de Ardoz","barrio":"Centro","direccion":"C. Soledad, 20, 28850 Torrejón de Ardoz","cocina":"Española de mercado / fusión","precio_medio":37,"nota_google":4.7,"resenas_aprox":335,"otras_notas":"TheFork 9,3/10 (45). Tripadvisor 4,6. Rango de precio 30-45 €","por_que":"Buen producto y platos cuidados (burrata, ensaladilla, dorada) en un local tranquilo, ideal para una cena en pareja.","reserva":"recomendada","web":"https://redondo.restaurant","telefono":"919 95 39 79","fuente":"https://gastroranking.es/r/restaurante-redondo-sl_30165/"},{"nombre":"La Terraza del Zoco","zona":"Torrejón de Ardoz","barrio":"Zona Lisboa / Soto Henares","direccion":"C. Lisboa, 4, local 10 (TheFork indica C. del Silicio, 58; confírmala)","cocina":"Mediterránea / española","precio_medio":25,"nota_google":4.5,"resenas_aprox":837,"otras_notas":"TheFork 9,4/10 (1.235). Tripadvisor 4,1","por_que":"Croquetas, berenjenas, arroces y tarta de queso muy alabados, a buen precio. Puede ser algo ruidoso.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://www.thefork.es/restaurantes/torrejon-de-ardoz-c555200"},{"nombre":"D'Qarmen Taberna","zona":"Torrejón de Ardoz","barrio":"Zona Unión Europea","direccion":"Av. de la Unión Europea, 12, 28850 Torrejón de Ardoz","cocina":"Taberna española moderna","precio_medio":null,"nota_google":4.8,"resenas_aprox":700,"otras_notas":"Tripadvisor 4,7. Local pequeño. Opciones sin gluten","por_que":"Tacos de oreja, croquetas, torreznos con revolconas, pulpo, atún y torrija, con platos fuera de carta.","reserva":"recomendada","web":"https://alexquintanar.es/dqarmen/","telefono":"910 54 26 77","fuente":"https://gastroranking.es/r/dqarmen-taberna_218928/"},{"nombre":"Aragón 20 (Gastrotaberna)","zona":"Torrejón de Ardoz","barrio":"Centro","direccion":"C. Aragón, 20, 28850 Torrejón de Ardoz","cocina":"Española / taberna","precio_medio":null,"nota_google":4.5,"resenas_aprox":6900,"otras_notas":"Tripadvisor 4,1 (159). Precio contenido según las reseñas","por_que":"Raciones generosas: cachopo, costillas, pizzas y tapas. Muy concurrido los fines de semana.","reserva":"recomendada","web":"https://aragon20.es","telefono":"916 78 02 62","fuente":"https://gastroranking.es/r/gastrotaberna_107403/"},{"nombre":"Gastrobar La Trastienda","zona":"Torrejón de Ardoz","barrio":"Centro","direccion":"C. de Madrid, 7, 28850 Torrejón de Ardoz","cocina":"Mediterránea / casera con toques modernos","precio_medio":null,"nota_google":null,"resenas_aprox":603,"otras_notas":"Tripadvisor 4,8 (58), €€-€€€","por_que":"Cocina casera actualizada; las croquetas XXL son lo más pedido.","reserva":"recomendada","web":null,"telefono":null,"fuente":"https://www.tripadvisor.com/Restaurants-g562661-Torrejon_De_Ardoz.html"},{"nombre":"Sidrería La Mina","zona":"Torrejón de Ardoz","barrio":"Centro","direccion":"C. de Rioja, 1, 28850 Torrejón de Ardoz","cocina":"Asturiana","precio_medio":null,"nota_google":null,"resenas_aprox":381,"otras_notas":"TheFork 8,9/10 (305). Tripadvisor 4,4. Comedor pequeño","por_que":"Cachopo, tortilla asturiana, zamburiñas y arroz con leche: cena asturiana sin complicaciones.","reserva":"recomendada","web":null,"telefono":"910 57 45 76","fuente":"https://gastroranking.es/r/sidreria-la-mina-2_169036/"},{"nombre":"Vinum","zona":"Torrejón de Ardoz","barrio":"Zona Budapest / Europa","direccion":"Calle Budapest, 28850 Torrejón de Ardoz","cocina":"Bar de tapas y vinos","precio_medio":null,"nota_google":4.4,"resenas_aprox":332,"otras_notas":"Agregador 8,8/10. Terraza. Viernes de 18:00 a 24:00","por_que":"Tapas y raciones baratas con buen ambiente y terraza, para una cena de picoteo.","reserva":"recomendada","web":null,"telefono":"692 83 65 27","fuente":"https://gastroranking.es/r/vinum-2_64192/"},{"nombre":"El Rey de Oros","zona":"Cobeña","barrio":"Ctra. Alcalá-Torrelaguna","direccion":"Ctra. de Alcalá-Torrelaguna, 3-7, 28863 Cobeña","cocina":"Española / brasa","precio_medio":null,"nota_google":4.3,"resenas_aprox":2300,"otras_notas":"Tripadvisor 3,6 (158). Cierra los lunes. Es el único de Cobeña que pasa el filtro de críticas","por_que":"Referencia de la zona para el conejo al ajillo y la oreja crujiente.","reserva":"recomendada","web":null,"telefono":"916 20 80 04","fuente":"https://www.qdq.com/el-rey-de-oros-taberna-hostal-752453"},{"nombre":"Finca Restaurante El Cine","zona":"Daganzo de Arriba","barrio":"Ctra. Alcalá-Daganzo (antiguos estudios Madrid 70)","direccion":"Ctra. de Alcalá-Daganzo, km 8,400, 28814 Daganzo de Arriba","cocina":"Mediterránea / española, brasa","precio_medio":null,"nota_google":4.7,"resenas_aprox":644,"otras_notas":"Tripadvisor 4,5, €€-€€€. Viernes de 12:00 a 01:00. Aparcamiento propio","por_que":"Carnes y pescado a la brasa, croquetas y ensaladilla con ventresca en el antiguo plató western de Madrid 70.","reserva":"recomendada","web":"https://fincaelcine.com","telefono":"918 94 96 39","fuente":"https://fincaelcine.com/"},{"nombre":"Punto de Oro","zona":"Daganzo de Arriba","barrio":"Casco urbano","direccion":"C. de Isaac Peral, 13, 28814 Daganzo de Arriba","cocina":"Española","precio_medio":null,"nota_google":4.7,"resenas_aprox":159,"otras_notas":"Reseñas de 2026. Destaca su terraza","por_que":"Carne en su punto, tortilla y tarta de queso, buen servicio y una terraza agradable.","reserva":"recomendada","web":null,"telefono":"611 18 60 69","fuente":"https://gastroranking.es/r/restaurante-punto-de-oro_235199/"},{"nombre":"El Shaddai Gastrobar","zona":"Daganzo de Arriba","barrio":null,"direccion":"Daganzo de Arriba","cocina":"Gastrobar / coctelería","precio_medio":null,"nota_google":4.4,"resenas_aprox":363,"otras_notas":"Nuevos dueños hace poco, con buenas reseñas","por_que":"Cena informal de picoteo y cócteles en un ambiente tranquilo.","reserva":"no necesaria","web":null,"telefono":null,"fuente":"https://gastroranking.es/r/el-shaddai-teteria-y-cocteleria-gastrobar_221912/"},{"nombre":"In-Pulso","zona":"Madrid","barrio":"Usera (Legazpi)","direccion":"Calle Ariel 15, 28045 Madrid","cocina":"Española actual / inspirada en la historia de Madrid","precio_medio":null,"nota_google":null,"resenas_aprox":null,"otras_notas":"Bib Gourmand Michelin 2026 (novedad). Viernes: comida 13:30-15:15 y cena 20:30-22:15; cierra domingo y lunes","por_que":"Carta de bocados y platos para compartir con menú degustación opcional; novedad Bib Gourmand 2026.","reserva":"recomendada","web":"","telefono":"","fuente":"https://guide.michelin.com/fr/fr/comunidad-de-madrid/madrid/restaurant/in-pulso","alta":"2026-10-19"},{"nombre":"Alcaravea Alcalá de Henares","zona":"Alcalá de Henares","barrio":"La Garena (C.C. Garena Plaza)","direccion":"Avenida Juan Carlos I 13, local 49, 28806 Alcalá de Henares","cocina":"Mediterránea / cocina de mercado","precio_medio":null,"nota_google":4.4,"resenas_aprox":2300,"otras_notas":"Gastroranking 8,5 (2.380 opiniones) / Tripadvisor 4.0 (228). Viernes abre hasta la 01:30; cierra domingo","por_que":"Cocina de mercado de raciones generosas sin ser caro; los huevos con Idiazábal y aceite de trufa blanca son lo más elogiado.","reserva":"recomendada","web":"https://alcaravea.com/","telefono":"918 30 54 30","fuente":"https://gastroranking.es/r/alcaravea-alcala_35298/","alta":"2026-10-19"},{"nombre":"Chado","zona":"Alcalá de Henares","barrio":"Ronda Fiscal","direccion":"Calle Ronda Fiscal 42, 28803 Alcalá de Henares","cocina":"Mediterránea / parrilla","precio_medio":28,"nota_google":null,"resenas_aprox":null,"otras_notas":"Gastroranking 8,6 (1.074 opiniones de 3 webs) / Pidemesa 4.5 (363). Viernes 13:00-17:30 y 20:00-00:30; cierra lunes. Reseñas de mar-abr 2026","por_que":"Buena relación calidad-precio: focaccia con anchoa, croquetas y torrija; menús diarios en torno a 20 €.","reserva":"recomendada","web":"https://restaurantechado.com","telefono":"910 41 89 77","fuente":"https://gastroranking.es/r/chado_164673/","alta":"2026-10-19"}];
+const UPDATED = "19 de octubre de 2026";
+const ZONES = ["Madrid","Alcalá de Henares","Torrejón de Ardoz","Cobeña","Daganzo de Arriba"];
+const ZONE_SHORT = {"Madrid":"Madrid","Alcalá de Henares":"Alcalá","Torrejón de Ardoz":"Torrejón","Cobeña":"Cobeña","Daganzo de Arriba":"Daganzo"};
+const DAY = 864e5;
+const VIERNES = [["1","1.º"],["2","2.º"],["3","3.º"],["4","4.º"],["ultimo","Último"]];
+
+// ---------- almacenamiento local (comodidad; la app funciona sin él) ----------
+function load(k,d){try{const v=localStorage.getItem("cv_"+k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem("cv_"+k,JSON.stringify(v))}catch(e){}}
+let state = {
+  fuimos: load("fuimos",{}),      // id -> fecha
+  no: load("no",{}),              // id -> true
+  zonas: load("zonas",ZONES.slice()),
+  skip: load("skipm",{}),         // mes -> nº de "otra opción"
+  viernes: load("viernes","ultimo")
+};
+
+// Prepara cada restaurante: id estable y nota alternativa (TheFork /10 → /5, Tripadvisor) si falta la de Google
+function prepare(list){
+  list.forEach(r=>{
+    r.id=slug(r.nombre+"-"+r.zona);
+    if(r.nota_google==null&&!r.alt_src){
+      const n=r.otras_notas||"";
+      const tf=n.match(/TheFork\s*([0-9]+[.,][0-9])/i), ta=n.match(/Tripadvisor\s*([0-9][.,][0-9])/i);
+      if(tf){r.alt_src="TheFork";r.alt_nota=tf[1].replace(".",",")+"/10";r.alt_g=parseFloat(tf[1].replace(",","."))/2}
+      else if(ta){r.alt_src="Tripadvisor";r.alt_nota=ta[1].replace(".",",");r.alt_g=parseFloat(ta[1].replace(",","."))}
+    }
+  });
+  return list.filter(r=>r.precio_medio==null||r.precio_medio<=45);
+}
+function slug(s){return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-")}
+
+// ---------- rotación semanal determinista ----------
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function score(r){
+  const g = r.nota_google ?? r.alt_g ?? 4.4;
+  const n = Math.min(Math.log10((r.resenas_aprox||300)),3.6)/3.6;
+  return g + n*0.25 + (/bib|solete|michelin/i.test(r.otras_notas||"")?0.15:0);
+}
+// Ciclos mensuales: mes 0 = octubre de 2026. La cena es el viernes elegido de cada mes.
+function monthIdx(d){return (d.getFullYear()-2026)*12+d.getMonth()-9}
+function fridayOf(m){
+  const y=2026+Math.floor((9+m)/12), mo=((9+m)%12+12)%12;
+  if(state.viernes==="ultimo"){const d=new Date(y,mo+1,0);while(d.getDay()!==5)d.setDate(d.getDate()-1);return d}
+  const d=new Date(y,mo,1);while(d.getDay()!==5)d.setDate(d.getDate()+1);d.setDate(d.getDate()+7*(Number(state.viernes)-1));return d;
+}
+function today0(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function currentCycle(){const t=today0();let m=monthIdx(t);if(fridayOf(m)<t)m++;return m}
+const parseDay = s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const isNew = r=>!!r.alta&&(new Date()-parseDay(r.alta))<35*DAY;
+// Cola mensual estable: el lote inicial va en orden barajado alternando zona/cocina; cada lote nuevo
+// (mismo "alta") se intercala dos meses después de su alta, así nunca cambia el mes que ya se está mostrando ni los pasados.
+function greedy(pool){
+  const out=[]; const cuisineKey=r=>(r.cocina||"").toLowerCase().split(/[ /,(]/)[0];
+  while(pool.length){
+    const last=out[out.length-1];
+    let i=pool.findIndex(r=>!last||(r.zona!==last.zona&&cuisineKey(r)!==cuisineKey(last)));
+    if(i<0) i=pool.findIndex(r=>!last||r.zona!==last.zona);
+    if(i<0) i=0;
+    out.push(pool.splice(i,1)[0]);
+  }
+  return out;
+}
+let ROTATION = [];
+function buildRotation(){
+  const rand = rng(20261019);
+  const base = DATA.filter(r=>!r.alta);
+  const q = greedy(base.map(r=>({r,k:rand()*0.9 - score(r)*0.25})).sort((a,b)=>a.k-b.k).map(x=>x.r));
+  const batches = {};
+  DATA.filter(r=>r.alta).forEach(r=>(batches[r.alta]=batches[r.alta]||[]).push(r));
+  Object.keys(batches).sort().forEach(a=>{
+    const items = greedy(batches[a].sort((x,y)=>score(y)-score(x)));
+    let pos = monthIdx(parseDay(a))+2;
+    items.forEach(r=>{q.splice(Math.min(pos,q.length),0,r);pos+=2});
+  });
+  return q;
+}
+
+function eligible(r){return state.zonas.includes(r.zona)&&!state.no[r.id]&&!state.fuimos[r.id]}
+function pickFor(w,extra){
+  const n=ROTATION.length; if(!n) return null;
+  const off = extra ?? (state.skip[w]||0);
+  const list=[];
+  for(let j=0;j<n;j++){const r=ROTATION[(((w+j)%n)+n)%n];if(eligible(r))list.push(r)}
+  if(!list.length) return null;
+  return list[off%list.length];
+}
+
+// ---------- utilidades de formato ----------
+const fmtDate = d=>d.toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"}).replace(".","");
+const fmtLong = d=>d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+const esc = s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num = n=>n==null?"":n.toLocaleString("es-ES");
+const price = r=>r.precio_medio==null?"≤ 45 €":`${r.precio_medio} €`;
+const rating = r=>r.nota_google!=null?r.nota_google.toFixed(1).replace(".",","):(r.alt_nota||"—");
+const ratingSrc = r=>r.nota_google!=null?"Google":(r.alt_src||"Nota");
+const mapsUrl = r=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent([r.nombre,r.direccion,r.zona].filter(Boolean).join(", "));
+const reserveChip = r=>{const v=(r.reserva||"").toLowerCase();return v.startsWith("impres")?`<span class="chip warn">Reserva imprescindible</span>`:v.startsWith("recom")?`<span class="chip">Reserva recomendada</span>`:v?`<span class="chip">Sin reserva</span>`:""};
+
+function detailBlock(r){
+  return `
+    <p class="why">${esc(r.por_que)}</p>
+    <p class="addr">${esc(r.direccion||"Dirección no confirmada")}${r.barrio?" · "+esc(r.barrio):""}</p>
+    ${r.otras_notas?`<p class="notes">${esc(r.otras_notas)}</p>`:""}
+    ${r.telefono?`<div class="phone"><span>Reservas: <span class="mono">${esc(r.telefono)}</span></span><button type="button" data-copy="${esc(r.telefono)}">Copiar</button></div>`:""}
+    <div class="actions">
+      <a class="btn primary" href="${mapsUrl(r)}" target="_blank" rel="noopener">Cómo llegar</a>
+      ${r.web?`<a class="btn" href="${esc(r.web)}" target="_blank" rel="noopener">Web / carta</a>`:`<a class="btn" href="${esc(r.fuente||mapsUrl(r))}" target="_blank" rel="noopener">Ver reseñas</a>`}
+    </div>`;
+}
+
+// ---------- vista del mes ----------
+const monthName = d=>d.toLocaleDateString("es-ES",{month:"long"});
+function renderWeek(){
+  const w=currentCycle(); const fri=fridayOf(w);
+  const days=Math.round((fri-today0())/DAY);
+  document.getElementById("countdown").innerHTML = days>0?`<b>${days} ${days===1?"día":"días"}</b>para la cena`:`<b>¡Hoy!</b>a cenar`;
+  const r=pickFor(w); const t=document.getElementById("ticket");
+  if(!r){t.innerHTML=`<div class="ticket-body" style="padding-top:18px"><h2>Sin propuestas</h2><p class="why">Has descartado todos o no hay zonas marcadas. Revísalo en Ajustes.</p></div>`;return}
+  t.innerHTML=`
+    <div class="ticket-head"><div><div class="eyebrow">Cena de ${monthName(fri)}</div><div class="date">${fmtLong(fri)}</div></div><span class="mono" style="font-size:12px;opacity:.85">${days<=10?"RESERVA YA":fri.getFullYear()}</span></div>
+    <div class="perf" aria-hidden="true"></div>
+    <div class="ticket-body">
+      <div class="meta"><span class="chip zone">${esc(ZONE_SHORT[r.zona]||r.zona)}</span><span class="chip">${esc(r.cocina)}</span>${reserveChip(r)}</div>
+      <h2>${esc(r.nombre)}${isNew(r)?'<span class="badge">Nuevo</span>':""}</h2>
+      <div class="figures">
+        <div><span class="eyebrow">Cubierto medio</span><span class="big mono">${price(r)} <small>/ persona</small></span></div>
+        <div><span class="eyebrow">${ratingSrc(r)}</span><span class="big"><span class="stars">★</span> ${rating(r)} <small>${r.resenas_aprox?num(r.resenas_aprox)+" reseñas":""}</small></span></div>
+      </div>
+      ${detailBlock(r)}
+      <div class="secondary-actions">
+        <button class="btn ghost" type="button" id="otra">Otra opción</button>
+        <button class="btn ghost" type="button" id="fuimos">Ya fuimos</button>
+        <button class="btn ghost" type="button" id="nogusta">No me apetece</button>
+      </div>
+      <p class="toast" id="toast" aria-live="polite"></p>
+    </div>`;
+  document.getElementById("otra").onclick=()=>{state.skip[w]=(state.skip[w]||0)+1;save("skipm",state.skip);renderAll();flash("Te propongo otro para este mes.")};
+  document.getElementById("fuimos").onclick=()=>{state.fuimos[r.id]=new Date().toISOString().slice(0,10);save("fuimos",state.fuimos);renderAll();flash(`Apuntado: ya fuisteis a ${r.nombre}.`)};
+  document.getElementById("nogusta").onclick=()=>{state.no[r.id]=true;save("no",state.no);renderAll();flash(`${r.nombre} no volverá a salir.`)};
+
+  const up=document.getElementById("upcoming"); let html="";
+  for(let i=1;i<=3;i++){const f=fridayOf(w+i);const x=pickFor(w+i,0);if(!x)break;
+    html+=`<div class="next-row"><span class="d">${fmtDate(f)}</span><span class="n">${esc(x.nombre)}<small>${esc(ZONE_SHORT[x.zona])} · ${esc(x.cocina)}</small></span><span class="p mono">${price(x)}</span></div>`}
+  up.innerHTML=html||`<div class="next-row"><span class="n">Sin más propuestas</span></div>`;
+
+  const hist=document.getElementById("history"); let h="";
+  for(let i=1;i<=3 && w-i>=0;i++){const f=fridayOf(w-i);const x=pickFor(w-i);
+    if(x) h+=`<div class="next-row"><span class="d">${fmtDate(f)}</span><span class="n">${esc(x.nombre)}<small>${esc(ZONE_SHORT[x.zona])}</small></span><span class="p mono">${price(x)}</span></div>`}
+  document.getElementById("historySec").hidden=!h; hist.innerHTML=h;
+}
+function flash(msg){const t=document.getElementById("toast");if(t){t.textContent=msg;setTimeout(()=>{if(t.textContent===msg)t.textContent=""},3500)}}
+
+// ---------- vista todos ----------
+let zoneFilter="Todas";
+function renderChips(){
+  const counts={};DATA.forEach(r=>counts[r.zona]=(counts[r.zona]||0)+1);
+  document.getElementById("zoneChips").innerHTML=["Todas",...ZONES].filter(z=>z==="Todas"||counts[z]).map(z=>`<button type="button" data-z="${z}" aria-pressed="${z===zoneFilter}">${ZONE_SHORT[z]||z} <span class="mono" style="opacity:.6">${z==="Todas"?DATA.length:counts[z]}</span></button>`).join("");
+  document.getElementById("prefViernes").innerHTML=VIERNES.map(([v,l])=>`<button type="button" data-vf="${v}" aria-pressed="${state.viernes===v}">${l}</button>`).join("");
+  document.getElementById("prefZones").innerHTML=ZONES.filter(z=>counts[z]).map(z=>`<button type="button" data-pz="${z}" aria-pressed="${state.zonas.includes(z)}">${ZONE_SHORT[z]}</button>`).join("");
+}
+function renderList(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const s=document.getElementById("sort").value;
+  let rows=DATA.filter(r=>(zoneFilter==="Todas"||r.zona===zoneFilter)&&(!q||(r.nombre+" "+r.cocina+" "+(r.barrio||"")).toLowerCase().includes(q)));
+  const by={nota:(a,b)=>(b.nota_google??b.alt_g??0)-(a.nota_google??a.alt_g??0),precio:(a,b)=>(a.precio_medio??99)-(b.precio_medio??99),resenas:(a,b)=>(b.resenas_aprox??0)-(a.resenas_aprox??0),nombre:(a,b)=>a.nombre.localeCompare(b.nombre,"es")};
+  rows.sort(by[s]);
+  document.getElementById("count").textContent=`${rows.length} restaurante${rows.length===1?"":"s"} · cubierto medio ≤ 45 €`;
+  document.getElementById("list").innerHTML=rows.map(r=>`
+    <details class="r"><summary>
+      <span class="r-name">${esc(r.nombre)}${isNew(r)?'<span class="badge">Nuevo</span>':""}${state.fuimos[r.id]?'<span class="badge">Fuimos</span>':""}${state.no[r.id]?'<span class="badge no">Descartado</span>':""}</span>
+      <span class="r-sub">${esc(ZONE_SHORT[r.zona])}${r.barrio?" · "+esc(r.barrio):""} · ${esc(r.cocina)}</span>
+      <span class="r-right"><span><span class="stars">★</span> ${rating(r)}${r.nota_google==null&&r.alt_src?` <small style="color:var(--muted)">${r.alt_src==="TheFork"?"TF":"TA"}</small>`:""}</span><span class="mono">${price(r)}</span></span>
+    </summary><div class="r-body">${detailBlock(r)}</div></details>`).join("");
+}
+function renderSettings(){
+  const f=Object.keys(state.fuimos).length,n=Object.keys(state.no).length;
+  document.getElementById("markedInfo").textContent=`${f} marcado${f===1?"":"s"} como «Ya fuimos» y ${n} como «No me apetece».`;
+  document.getElementById("dataInfo").textContent=`Estudio con ${DATA.length} restaurantes, datos revisados el ${UPDATED}. Precios y notas orientativos: confírmalos al reservar.`;
+}
+function renderAll(){renderWeek();renderChips();renderList();renderSettings()}
+
+// ---------- eventos ----------
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-copy]");
+  if(c){const v=c.dataset.copy;const done=()=>{c.textContent="Copiado";setTimeout(()=>c.textContent="Copiar",1800)};
+    try{navigator.clipboard.writeText(v).then(done,()=>{selectText(c.previousElementSibling)})}catch(err){selectText(c.previousElementSibling)}}
+  const z=e.target.closest("[data-z]"); if(z){zoneFilter=z.dataset.z;renderChips();renderList()}
+  const pz=e.target.closest("[data-pz]"); if(pz){const v=pz.dataset.pz;state.zonas=state.zonas.includes(v)?state.zonas.filter(x=>x!==v):[...state.zonas,v];save("zonas",state.zonas);renderAll()}
+  const vf=e.target.closest("[data-vf]"); if(vf){state.viernes=vf.dataset.vf;save("viernes",state.viernes);renderAll()}
+  const tab=e.target.closest("[data-view]"); if(tab) show(tab.dataset.view);
+});
+function selectText(el){try{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}catch(e){}}
+document.getElementById("q").addEventListener("input",renderList);
+document.getElementById("sort").addEventListener("change",renderList);
+document.getElementById("resetBtn").onclick=()=>{state.fuimos={};state.no={};state.skip={};save("fuimos",{});save("no",{});save("skipm",{});renderAll();document.getElementById("resetToast").textContent="Listo: todos vuelven a la rotación."};
+function show(v){["semana","todos","ajustes"].forEach(x=>{document.getElementById("view-"+x).hidden=x!==v;document.getElementById("tab-"+x).setAttribute("aria-selected",x===v)});window.scrollTo(0,0)}
+if(["todos","ajustes"].includes(location.hash.slice(1))) show(location.hash.slice(1));
+DATA=prepare(DATA); ROTATION=buildRotation(); renderAll();
+// En la web publicada los datos viven en restaurantes.json (la rutina semanal lo actualiza); si no existe, se usan los incrustados
+fetch("restaurantes.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(d=>{
+  if(Array.isArray(d)&&d.length){DATA=prepare(d);ROTATION=buildRotation();renderAll()}
+}).catch(()=>{});
+</script>
+
+</body></html>
